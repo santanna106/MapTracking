@@ -66,13 +66,22 @@ const App = () => {
   useEffect(() => {
   
     requesLocationPermission();
-    const interval = setInterval(() => {
+    //const interval = setInterval(() => {
       getLocation();
      
-    },2000);
+    //},2000);
 
-    return () => clearInterval(interval);
+    //return () => clearInterval(interval);
   },[])
+
+  const handleUserLocationChange = ({ nativeEvent }) => {
+    console.warn(nativeEvent.coordinate);
+    setPosition({
+      ...position,
+     latitude: nativeEvent.coordinate.latitude,
+     longitude: nativeEvent.coordinate.longitude,
+    });
+  };
 
   useKeepAwake(); //Não entrar na tela de descanso
   return (
@@ -81,12 +90,16 @@ const App = () => {
        provider={PROVIDER_GOOGLE} // remove if not using Google Maps
        style={styles.map}
        region={position}
+       showsUserLocation
+       followsUserLocation
+       loadingEnabled={true}
+       onUserLocationChange={handleUserLocationChange}
        
      >
        <Marker 
             coordinate={position}      
           >
-            <Image source={require('./assets/frontal-truck.png')} style={{height: 35, width:35, resizeMode:"contain" }} />
+            <Image source={require('./assets/frontal-truck.png')} style={{height: 35, width:35, resizeMode:"contain",elevation : 5 }} />
        </Marker>
      </MapView>
    </SafeAreaView>
